@@ -61,6 +61,6 @@ jobs:
            application_name: Demo-CICD-microservices
            environment_name: Democicdmicroservices-env
            version_label: "ver-${{ github.sha }}"
-           region: ap-south-1
+           region: eu-central-1
            deployment_package: deploy.zip
            
