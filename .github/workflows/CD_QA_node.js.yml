@@ -1,0 +1,66 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Deploy on QA
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy_on_qa:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+       - name: Checkout Source Code
+         uses: actions/checkout@v2
+         
+       - name:  Create Products Env file
+         working-directory: ./product
+         run : |
+           touch .env
+           echo PORT=8002 >> .env
+           echo APP_SECRET=jg_youtube_tutorial >> .env
+           echo MONGODB_URI=mongodb://nosql-db:27017/Microservices-product >> .env
+           echo MESSAGE_BROKER_URL=amqps://jqgwmoto:PxM2sCmNY8Yhs4WlizprjKndPlKDBgE-@puffin.rmq2.cloudamqp.com/jqgwmoto >> .env 
+           cat .env 
+           
+       - name:  Create Customer Env file
+         working-directory: ./customer
+         run : |
+           touch .env
+           echo PORT=8001 >> .env
+           echo APP_SECRET=jg_youtube_tutorial >> .env
+           echo MONGODB_URI=mongodb://nosql-db:27017/Microservices-customer >> .env
+           echo MESSAGE_BROKER_URL=amqps://jqgwmoto:PxM2sCmNY8Yhs4WlizprjKndPlKDBgE-@puffin.rmq2.cloudamqp.com/jqgwmoto >> .env 
+           cat .env
+        
+       - name:  Create Shopping Env file
+         working-directory: ./shopping
+         run : |
+           touch .env
+           echo PORT=8003 >> .env
+           echo APP_SECRET=jg_youtube_tutorial >> .env
+           echo MONGODB_URI=mongodb://nosql-db:27017/Microservices-shopping >> .env
+           echo MESSAGE_BROKER_URL=amqps://jqgwmoto:PxM2sCmNY8Yhs4WlizprjKndPlKDBgE-@puffin.rmq2.cloudamqp.com/jqgwmoto >> .env 
+           cat .env 
+           
+           
+           
+       - name: Generate deployment package  
+         run: |
+           zip -r deploy.zip . -x '*.git'
+           
+       - name: Deploy on Elastic beanstalk QA Env
+         uses: einaregilsson/beanstalk-deploy@v20
+         with: 
+           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+           aws_secret_key: ${{  secrets.AWS_SECRET_KEY }}
+           application_name: Demo-CICD-microservices
+           environment_name: Democicdmicroservices-env
+           version_label: "ver-${{ github.sha }}"
+           region: ap-south-1
+           deployment_package: deploy.zip
+           
