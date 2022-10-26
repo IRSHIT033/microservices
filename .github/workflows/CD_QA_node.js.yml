@@ -49,19 +49,19 @@ jobs:
            
            
            
-       - name: Generate deployment package  
-         run: |
-           zip -r deploy.zip . -x '*.git'
+#        - name: Generate deployment package  
+#          run: |
+#            zip -r deploy.zip . -x '*.git'
            
-       - name: Deploy on Elastic beanstalk QA Env
-         uses: einaregilsson/beanstalk-deploy@v20
-         with: 
-           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-           application_name: Demo-CICD-microservices
-           environment_name: Democicdmicroservices-env
-           version_label: "Sample Application"
-           region: ap-south-1
-           deployment_package: deploy.zip
-           use_existing_version_if_available: true
+#        - name: Deploy on Elastic beanstalk QA Env
+#          uses: einaregilsson/beanstalk-deploy@v20
+#          with: 
+#            aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+#            aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+#            application_name: Demo-CICD-microservices
+#            environment_name: Democicdmicroservices-env
+#            version_label: "Sample Application"
+#            region: ap-south-1
+#            deployment_package: deploy.zip
+#            use_existing_version_if_available: true
            
